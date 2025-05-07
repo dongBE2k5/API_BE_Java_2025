@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách khách sạn</title>
+</head>
+<body>
+    <h1>Danh sách khách sạn</h1>
+    <a th:href="@{/hotels/new}">Tạo khách sạn mới</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Địa điểm</th>
+                <th>Địa chỉ</th>
+                <th>Điện thoại</th>
+                <th>Email</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="hotel : ${hotels}">
+                <td th:text="${hotel.hotelId}"></td>
+                <td th:text="${hotel.name}"></td>
+                <td th:text="${hotel.location.name}"></td>
+                <td th:text="${hotel.address}"></td>
+                <td th:text="${hotel.phone}"></td>
+                <td th:text="${hotel.email}"></td>
+                <td>
+                    <a th:href="@{/hotels/{id}/edit(id=${hotel.hotelId})}">Chỉnh sửa</a>
+                    <form th:action="@{/hotels/{id}/delete(id=${hotel.hotelId})}" method="post" style="display:inline;">
+                        <button type="submit">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
