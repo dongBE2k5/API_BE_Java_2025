@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "room_type")
+@Table(name = "room_types")
 @Getter
 @Setter
 public class RoomType {
@@ -17,11 +17,6 @@ public class RoomType {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "capacity")
-    private Integer capacity;
 
 	public Integer getRoomTypeId() {
 		return roomTypeId;
@@ -39,20 +34,6 @@ public class RoomType {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Integer getCapacity() {
-		return capacity;
-	}
-
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
+	
     
 }

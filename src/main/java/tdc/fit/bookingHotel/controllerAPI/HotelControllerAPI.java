@@ -1,7 +1,11 @@
 package tdc.fit.bookingHotel.controllerAPI;
 
 import tdc.fit.bookingHotel.entity.Hotel;
+import tdc.fit.bookingHotel.entity.Location;
+import tdc.fit.bookingHotel.entity.DTO.HotelDTO;
 import tdc.fit.bookingHotel.repository.HotelRepository;
+import tdc.fit.bookingHotel.repository.LocationRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +18,9 @@ public class HotelControllerAPI {
 
     @Autowired
     private HotelRepository hotelRepository;
+    
+    @Autowired
+    private LocationRepository locationRepository;
 
     @GetMapping
     public List<Hotel> getAllHotels() {
@@ -21,33 +28,47 @@ public class HotelControllerAPI {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Hotel> getHotelById(@PathVariable Integer id) {
+    public ResponseEntity<Hotel> getHotelById(@PathVariable Long id) {
         return hotelRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Hotel createHotel(@RequestBody Hotel hotel) {
-        return hotelRepository.save(hotel);
+    public ResponseEntity<Hotel> createHotel(@RequestBody HotelDTO hotelDTO) {
+    	Location location = locationRepository.findById(hotelDTO.getLocationId()).orElse(null);
+    	if(location != null) {
+    		Hotel hotel = new Hotel();
+    		hotel.setAddress(hotelDTO.getAddress());
+    		hotel.setEmail(hotelDTO.getEmail());
+    		hotel.setName(hotelDTO.getName());
+    		hotel.setPhone(hotelDTO.getPhone());
+    		hotel.setStatus(hotelDTO.getStatus());
+    		hotel.setLocationId(location);
+            return ResponseEntity.ok(hotel);
+
+    	}
+    	return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Hotel> updateHotel(@PathVariable Integer id, @RequestBody Hotel hotelDetails) {
+    public ResponseEntity<Hotel> updateHotel(@PathVariable Long id, @RequestBody HotelDTO hotelDTO) {
+    	Location location = locationRepository.findById(hotelDTO.getLocationId()).orElse(null);
+    	
         return hotelRepository.findById(id)
                 .map(hotel -> {
-                    hotel.setName(hotelDetails.getName());
-                    hotel.setLocation(hotelDetails.getLocation());
-                    hotel.setAddress(hotelDetails.getAddress());
-                    hotel.setPhone(hotelDetails.getPhone());
-                    hotel.setEmail(hotelDetails.getEmail());
+                    hotel.setName(hotelDTO.getName());
+                    hotel.setLocationId(location);
+                    hotel.setAddress(hotelDTO.getAddress());
+                    hotel.setPhone(hotelDTO.getPhone());
+                    hotel.setEmail(hotelDTO.getEmail());
                     return ResponseEntity.ok(hotelRepository.save(hotel));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHotel(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
         return hotelRepository.findById(id)
                 .map(hotel -> {
                     hotelRepository.delete(hotel);

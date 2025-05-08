@@ -38,11 +38,11 @@ public class HotelController {
     }
 
     @PostMapping
-    public String createHotel(@RequestParam String name, @RequestParam Integer locationId, @RequestParam String address, @RequestParam String phone, @RequestParam String email, RedirectAttributes redirectAttributes) {
+    public String createHotel(@RequestParam String name, @RequestParam Long locationId, @RequestParam String address, @RequestParam String phone, @RequestParam String email, RedirectAttributes redirectAttributes) {
         Hotel hotel = new Hotel();
         hotel.setName(name);
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
-        hotel.setLocation(location);
+        hotel.setLocationId(location);
         hotel.setAddress(address);
         hotel.setPhone(phone);
         hotel.setEmail(email);
@@ -52,7 +52,7 @@ public class HotelController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editHotelForm(@PathVariable Integer id, Model model) {
+    public String editHotelForm(@PathVariable Long id, Model model) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid hotel Id:" + id));
         model.addAttribute("hotel", hotel);
         model.addAttribute("locations", locationRepository.findAll());
@@ -60,11 +60,11 @@ public class HotelController {
     }
 
     @PostMapping("/{id}")
-    public String updateHotel(@PathVariable Integer id, @RequestParam String name, @RequestParam Integer locationId, @RequestParam String address, @RequestParam String phone, @RequestParam String email, RedirectAttributes redirectAttributes) {
+    public String updateHotel(@PathVariable Long id, @RequestParam String name, @RequestParam Long locationId, @RequestParam String address, @RequestParam String phone, @RequestParam String email, RedirectAttributes redirectAttributes) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid hotel Id:" + id));
         hotel.setName(name);
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
-        hotel.setLocation(location);
+        hotel.setLocationId(location);
         hotel.setAddress(address);
         hotel.setPhone(phone);
         hotel.setEmail(email);
@@ -74,7 +74,7 @@ public class HotelController {
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteHotel(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteHotel(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid hotel Id:" + id));
         hotelRepository.delete(hotel);
         redirectAttributes.addFlashAttribute("message", "Khách sạn được xóa thành công");

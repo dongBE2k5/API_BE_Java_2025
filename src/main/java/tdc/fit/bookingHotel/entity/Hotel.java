@@ -1,41 +1,40 @@
 package tdc.fit.bookingHotel.entity;
+import org.springframework.data.annotation.Transient;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "hotel")
+@Table(name = "hotels")
 @Getter
 @Setter
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hotel_id")
-    private Integer hotelId;
+    private Long hotelId;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
-    private Location location;
+    private Location locationId;
 
     @Column(name = "address")
     private String address;
 
     @Column(name = "phone")
     private String phone;
-
+    
     @Column(name = "email")
     private String email;
+    
+    @Column(name = "status")
+    private String status;
 
-	public Integer getHotelId() {
-		return hotelId;
-	}
-
-	public void setHotelId(Integer hotelId) {
-		this.hotelId = hotelId;
-	}
 
 	public String getName() {
 		return name;
@@ -45,12 +44,21 @@ public class Hotel {
 		this.name = name;
 	}
 
-	public Location getLocation() {
-		return location;
+
+	public Long getHotelId() {
+		return hotelId;
 	}
 
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setHotelId(Long hotelId) {
+		this.hotelId = hotelId;
+	}
+
+	public Location getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(Location locationId) {
+		this.locationId = locationId;
 	}
 
 	public String getAddress() {
@@ -76,5 +84,20 @@ public class Hotel {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "Hotel [hotelId=" + hotelId + ", name=" + name + ", locationId=" + locationId + ", address=" + address
+				+ ", phone=" + phone + ", email=" + email + ", status=" + status + "]";
+	}
     
+	
 }

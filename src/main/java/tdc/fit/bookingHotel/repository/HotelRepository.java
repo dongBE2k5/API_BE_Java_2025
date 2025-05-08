@@ -1,7 +1,10 @@
 package tdc.fit.bookingHotel.repository;
 
-import  tdc.fit.bookingHotel.entity.Hotel;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HotelRepository extends JpaRepository<Hotel, Integer> {
+import tdc.fit.bookingHotel.entity.Hotel;
+
+
+public interface HotelRepository extends JpaRepository<Hotel, Long> {
 }
