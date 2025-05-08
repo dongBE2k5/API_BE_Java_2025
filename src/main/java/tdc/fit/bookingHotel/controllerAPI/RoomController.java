@@ -22,7 +22,7 @@ import tdc.fit.bookingHotel.entity.Room;
 import tdc.fit.bookingHotel.repository.RoomRepository;
 
 @RestController
-@RequestMapping("/api/hotels")
+@RequestMapping("/api/rooms")
 public class RoomController {
 
     @Autowired
