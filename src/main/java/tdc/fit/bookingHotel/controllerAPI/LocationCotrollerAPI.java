@@ -27,6 +27,7 @@ public class LocationCotrollerAPI {
 		return locationRepository.findAll();
 	}
 	
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Location> getLocationByID(@PathVariable Long id){
 		return locationRepository.findById(id).map(ResponseEntity::ok)

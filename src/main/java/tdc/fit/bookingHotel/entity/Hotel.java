@@ -35,6 +35,18 @@ public class Hotel {
     @Column(name = "status")
     private String status;
 
+    
+    @Lob
+    @Column(name = "image")
+    private String image;
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 
 	public String getName() {
 		return name;
@@ -96,7 +108,7 @@ public class Hotel {
 	@Override
 	public String toString() {
 		return "Hotel [hotelId=" + hotelId + ", name=" + name + ", locationId=" + locationId + ", address=" + address
-				+ ", phone=" + phone + ", email=" + email + ", status=" + status + "]";
+				+ ", phone=" + phone + ", email=" + email + ", status=" + status + ", image=" + image + "]";
 	}
     
 	

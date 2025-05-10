@@ -11,7 +11,7 @@ import tdc.fit.bookingHotel.entity.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long>{
 
-	Customer findByUsername(String username);
+
 
 	
 }

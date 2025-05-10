@@ -3,37 +3,43 @@ package tdc.fit.bookingHotel.Util;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
+@Component
 public class JwtUtil {
-    private static final String SECRET = "my-super-secret-key-my-super-secret-key"; // Ít nhất 32 bytes
-    private static final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private final String jwtSecret = "myVerySecretKeyForJWTGeneration1234"; // Bảo mật: nên cho dài hơn và lưu env var
+    private final int jwtExpirationMs = 86400000; // 24h
 
-    public static String generateToken(String username, Long id) {
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("USER_ID", id)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1h
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public static String getUsername(String token) {
-        return parseAllClaims(token).getSubject();
-    }
-
-    public static Long getUserId(String token) {
-        return parseAllClaims(token).get("USER_ID", Long.class);
-    }
-
-    private static Claims parseAllClaims(String token) {
+    public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .build()
                 .parseClaimsJws(token)
-                .getBody();
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 }
