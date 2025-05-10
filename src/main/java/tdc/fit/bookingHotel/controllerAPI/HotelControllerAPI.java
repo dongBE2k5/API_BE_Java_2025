@@ -40,9 +40,9 @@ public class HotelControllerAPI {
     	if(location != null) {
     		Hotel hotel = new Hotel();
     		hotel.setAddress(hotelDTO.getAddress());
-    		hotel.setEmail(hotelDTO.getEmail());
+    	
     		hotel.setName(hotelDTO.getName());
-    		hotel.setPhone(hotelDTO.getPhone());
+
     		hotel.setStatus(hotelDTO.getStatus());
     		hotel.setLocationId(location);
             return ResponseEntity.ok(hotel);
@@ -60,8 +60,7 @@ public class HotelControllerAPI {
                     hotel.setName(hotelDTO.getName());
                     hotel.setLocationId(location);
                     hotel.setAddress(hotelDTO.getAddress());
-                    hotel.setPhone(hotelDTO.getPhone());
-                    hotel.setEmail(hotelDTO.getEmail());
+
                     return ResponseEntity.ok(hotelRepository.save(hotel));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

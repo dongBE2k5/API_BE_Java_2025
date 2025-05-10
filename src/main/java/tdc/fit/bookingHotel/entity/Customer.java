@@ -3,6 +3,7 @@ import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Chain.
 import org.springframework.lang.Nullable;
 
 import jakarta.annotation.Generated;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ public class Customer {
 	private Long id;
 
 	@Nullable
+	@Column(name = "fullname")
 	private String fullname;
 	
 	@Column(nullable = false)
@@ -31,16 +33,19 @@ public class Customer {
 	@Nullable
 	private String cccd;
 
-	 @OneToOne
-	 @JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user_id;
+	
+	 @OneToOne(cascade = CascadeType.ALL)
+	 @JoinColumn(name = "user_id")
+	private User userId;
 
-	public User getIdUser() {
-		return user_id;
+	
+
+	public User getUserId() {
+		return userId;
 	}
 
-	public void setIdUser(User user_id) {
-		this.user_id = user_id;
+	public void setUserId(User userId) {
+		this.userId = userId;
 	}
 
 	public Long getId() {

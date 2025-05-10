@@ -25,20 +25,28 @@ public class Hotel {
 
     @Column(name = "address")
     private String address;
-
-    @Column(name = "phone")
-    private String phone;
     
-    @Column(name = "email")
-    private String email;
     
     @Column(name = "status")
     private String status;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "hotelier_id")
+    private Hotelier hotelierId;
+    
     
     @Lob
     @Column(name = "image")
     private String image;
+
+    
+	public Hotelier getHotelierId() {
+		return hotelierId;
+	}
+
+	public void setHotelierId(Hotelier hotelierId) {
+		this.hotelierId = hotelierId;
+	}
 
 	public String getImage() {
 		return image;
@@ -81,21 +89,7 @@ public class Hotel {
 		this.address = address;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	
 
 	public String getStatus() {
 		return status;
@@ -108,7 +102,7 @@ public class Hotel {
 	@Override
 	public String toString() {
 		return "Hotel [hotelId=" + hotelId + ", name=" + name + ", locationId=" + locationId + ", address=" + address
-				+ ", phone=" + phone + ", email=" + email + ", status=" + status + ", image=" + image + "]";
+				+ ", status=" + status + ", hotelierId=" + hotelierId + ", image=" + image + "]";
 	}
     
 	

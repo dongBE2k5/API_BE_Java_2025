@@ -29,6 +29,23 @@ public class Location {
     @OneToMany(mappedBy = "locationId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Hotel> hotels = new ArrayList<>();
 
+    
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public List<Hotel> getHotels() {
+		return hotels;
+	}
+
+	public void setHotels(List<Hotel> hotels) {
+		this.hotels = hotels;
+	}
+
 	public Long getLocationId() {
 		return locationId;
 	}

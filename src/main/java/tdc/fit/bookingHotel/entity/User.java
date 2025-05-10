@@ -1,10 +1,16 @@
 package tdc.fit.bookingHotel.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,7 +19,8 @@ public class User {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long userId;
     
     @Column(nullable = false, unique = true)
     private String username; // tên đăng nhập (Primary Key)
@@ -24,9 +31,19 @@ public class User {
     @Column(nullable = false)
     private String roles; // danh sách quyền (dạng chuỗi, phân cách bằng dấu phẩy): "ROLE_USER,ROLE_ADMIN"
 
-    // Getter/Setter
+    
+    @OneToOne(mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private Customer customer;
+    
+    
     public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public Long getId() {
+		return userId;
+	}
+	public void setId(Long userId) {
+		this.userId = userId;
+	}
+	public void setUsername(String username) { this.username = username; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }

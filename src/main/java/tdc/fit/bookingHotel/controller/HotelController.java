@@ -44,8 +44,7 @@ public class HotelController {
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
         hotel.setLocationId(location);
         hotel.setAddress(address);
-        hotel.setPhone(phone);
-        hotel.setEmail(email);
+    
         hotelRepository.save(hotel);
         redirectAttributes.addFlashAttribute("message", "Khách sạn được tạo thành công");
         return "redirect:/hotels";
@@ -66,8 +65,7 @@ public class HotelController {
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
         hotel.setLocationId(location);
         hotel.setAddress(address);
-        hotel.setPhone(phone);
-        hotel.setEmail(email);
+
         hotelRepository.save(hotel);
         redirectAttributes.addFlashAttribute("message", "Khách sạn được cập nhật thành công");
         return "redirect:/hotels";
