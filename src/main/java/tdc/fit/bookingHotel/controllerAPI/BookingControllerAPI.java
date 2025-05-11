@@ -1,9 +1,12 @@
 package tdc.fit.bookingHotel.controllerAPI;
 
 import tdc.fit.bookingHotel.entity.Booking;
-import tdc.fit.bookingHotel.repository.BookingRepository;
+
+import tdc.fit.bookingHotel.service.BookingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,31 +16,42 @@ import java.util.List;
 public class BookingControllerAPI {
 
     @Autowired
-    private BookingRepository bookingRepository;
+    private  BookingService bookingService;
 
     @GetMapping
     public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+        return bookingService.getAllBookings();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Integer id) {
-        return bookingRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getBookingById(@PathVariable Integer id) {
+        return bookingService.getBookingById(id);
     }
     
+
+    @GetMapping("/user")
+    public ResponseEntity<?>  getBookingByCustomer(Authentication authentication) {
+    	
+        return bookingService.getBookingByCustomer(authentication);
+    }
+    
+    @GetMapping("/hotelier")
+    public ResponseEntity<?>  getBookingByRoom(Authentication authentication) {
+    	
+        return bookingService.getBookingByRoom(authentication);
+    }
+    
+    
+    @PutMapping("/bookings/{id}/status")
+    public ResponseEntity<?> updateBookingStatus(@PathVariable Integer id, @RequestParam String action) {
+        return bookingService.updateBookingStatus(id, action);
+    }
+    
+    
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(
-                booking.getRoom().getRoomId(),
-                booking.getCheckInDate(),
-                booking.getCheckOutDate()
-        );
-        if (!overlappingBookings.isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok(bookingRepository.save(booking));
+    public ResponseEntity<?>  createBooking(@RequestBody Booking booking,Authentication authentication) {
+       
+        return bookingService.createBooking(booking, booking.getRoom().getRoomId(),authentication);
     }
 
 //    @PostMapping
@@ -46,27 +60,19 @@ public class BookingControllerAPI {
 //        return bookingRepository.save(booking);
 //    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Integer id, @RequestBody Booking bookingDetails) {
-        return bookingRepository.findById(id)
-                .map(booking -> {
-                    booking.setCustomer(bookingDetails.getCustomer());
-                    booking.setRoom(bookingDetails.getRoom());
-                    booking.setCheckInDate(bookingDetails.getCheckInDate());
-                    booking.setCheckOutDate(bookingDetails.getCheckOutDate());
-                    booking.setStatus(bookingDetails.getStatus());
-                    return ResponseEntity.ok(bookingRepository.save(booking));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+//    @PutMapping("/{id}")
+//    public Booking updateBooking(@PathVariable Integer id, @RequestBody Booking bookingDetails) {
+//        return bookingService.editBooking(id, bookingDetails);
+//    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Integer id) {
-        return bookingRepository.findById(id)
-                .map(booking -> {
-                    bookingRepository.delete(booking);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public void deleteBooking(@PathVariable Integer id) {
+         bookingService.deleteBooking(id);
+    }
+    
+    
+    @DeleteMapping("/user/{id}")
+    public void deleteUserBooking(@PathVariable Integer id ,Authentication authentication) {
+         bookingService.deleteUserBooking(id,authentication);
     }
 }

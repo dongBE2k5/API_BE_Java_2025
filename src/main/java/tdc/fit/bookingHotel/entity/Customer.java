@@ -1,31 +1,43 @@
 package tdc.fit.bookingHotel.entity;
-import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Chain.Strategy;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.lang.Nullable;
 
-import jakarta.annotation.Generated;
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "customers")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
+@Getter
+@Setter
 
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "customer_id")
+	private Long customerId;
 
 	@Nullable
 	@Column(name = "fullname")
 	private String fullname;
-	
+
 	@Column(nullable = false)
 	private String email;
 	@Nullable
@@ -33,12 +45,14 @@ public class Customer {
 	@Nullable
 	private String cccd;
 
-	
-	 @OneToOne(cascade = CascadeType.ALL)
-	 @JoinColumn(name = "user_id")
+	@OneToOne
+	@JoinColumn(name = "user_id")
 	private User userId;
 
 	
+	@OneToMany(mappedBy = "customer", orphanRemoval = true)
+	@JsonIgnore
+	private List<Booking> bookings = new ArrayList<>();
 
 	public User getUserId() {
 		return userId;
@@ -48,15 +62,14 @@ public class Customer {
 		this.userId = userId;
 	}
 
-	public Long getId() {
-		return id;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
-	
 	public String getFullname() {
 		return fullname;
 	}

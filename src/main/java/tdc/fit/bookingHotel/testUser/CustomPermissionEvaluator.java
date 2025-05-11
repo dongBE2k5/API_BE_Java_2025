@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
 	 private final PostRepository postRepository;
+	 
+	 
 
 	    @Autowired
 	    public CustomPermissionEvaluator(PostRepository postRepository) {

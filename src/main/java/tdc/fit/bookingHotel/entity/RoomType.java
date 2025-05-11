@@ -1,11 +1,19 @@
 package tdc.fit.bookingHotel.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "room_types")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "roomTypeId")
 @Getter
 @Setter
 public class RoomType {
@@ -17,7 +25,11 @@ public class RoomType {
     @Column(name = "name")
     private String name;
 
-
+    @OneToMany(mappedBy = "roomTypeId",  orphanRemoval = true)
+    @JsonIgnore
+	private List<Room> rooms = new ArrayList<>();
+    
+    
 	public Integer getRoomTypeId() {
 		return roomTypeId;
 	}

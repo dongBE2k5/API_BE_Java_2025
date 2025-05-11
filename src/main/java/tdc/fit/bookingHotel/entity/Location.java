@@ -2,6 +2,11 @@ package tdc.fit.bookingHotel.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +15,7 @@ import lombok.Setter;
 @Table(name = "locations")
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "locationId")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +33,7 @@ public class Location {
     private String image;
     
     @OneToMany(mappedBy = "locationId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private List<Hotel> hotels = new ArrayList<>();
 
     

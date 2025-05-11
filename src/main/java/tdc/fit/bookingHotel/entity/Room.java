@@ -6,9 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "rooms")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "roomId")
 @Getter
 @Setter
 public class Room {
@@ -43,6 +50,10 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
+    
+    @OneToMany(mappedBy = "room",  orphanRemoval = true)
+    @JsonIgnore
+	private List<Booking> bookings = new ArrayList<>();
 
 	public Long getRoomId() {
 		return roomId;

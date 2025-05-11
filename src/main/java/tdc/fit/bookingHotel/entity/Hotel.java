@@ -1,5 +1,9 @@
 package tdc.fit.bookingHotel.entity;
-import org.springframework.data.annotation.Transient;
+
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +13,7 @@ import lombok.Setter;
 @Table(name = "hotels")
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "hotelId")
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +24,7 @@ public class Hotel {
     private String name;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private Location locationId;
 
@@ -30,7 +35,7 @@ public class Hotel {
     @Column(name = "status")
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "hotelier_id")
     private Hotelier hotelierId;
     

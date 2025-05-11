@@ -6,8 +6,12 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "bookings")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "bookingId")
 @Getter
 @Setter
 public class Booking {
@@ -17,7 +21,7 @@ public class Booking {
 	private Integer bookingId;
 
 	@ManyToOne
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name ="customer_id")
 	private Customer customer;
 
 	@ManyToOne

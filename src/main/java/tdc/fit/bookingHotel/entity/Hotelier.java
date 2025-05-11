@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.springframework.lang.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,35 +16,47 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "hoteliers")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "hotelierId")
+@Getter
+@Setter
 public class Hotelier {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "hotelier_id")
 	private Long hotelierId;
-
+	
+    @JsonIgnore  // ⛔️ Ẩn khi trả JSON
 	@Column(nullable = false, unique = true)
-	private String name; // tên đăng nhập (Primary Key)
+	private String name; 
 
 	@Column(nullable = false)
 	private String fullName; // mật khẩu (nên lưu dạng mã hoá BCrypt)
 
 	@Nullable
 	private String phone;
+	
+    @JsonIgnore  // ⛔️ Ẩn khi trả JSON
 	@Nullable
 	private String cccd;
 	
 	 @Column(name = "email")
 	    private String email;
 	
-
+	 @OneToOne
+	 @JoinColumn(name = "user_id")
+	private User userId;
+	 
 	@OneToMany(mappedBy = "hotelierId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
 	private List<Hotel> hotels = new ArrayList<>();
 	
 	
