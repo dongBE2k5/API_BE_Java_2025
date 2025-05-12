@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Biểu mẫu khách sạn</title>
+<title>Biểu mẫu khách sạn</title>
 </head>
 <body>
-    <h1 th:text="${hotel.hotelId != null} ? 'Chỉnh sửa khách sạn' : 'Tạo khách sạn'"></h1>
-    <form th:action="${hotel.hotelId != null} ? @{/hotels/{id}(id=${hotel.hotelId})} : @{/hotels}" method="post">
-        <input type="hidden" name="hotelId" th:value="${hotel.hotelId}" />
-        <label for="name">Tên:</label>
-        <input type="text" id="name" name="name" th:value="${hotel.name}" /><br/>
-        <label for="location">Địa điểm:</label>
-        <select id="location" name="locationId">
-            <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.name}" th:selected="${hotel.location != null and hotel.location.locationId == loc.locationId}"></option>
-        </select><br/>
-        <label for="address">Địa chỉ:</label>
-        <input type="text" id="address" name="address" th:value="${hotel.address}" /><br/>
-        <label for="phone">Điện thoại:</label>
-        <input type="text" id="phone" name="phone" th:value="${hotel.phone}" /><br/>
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" th:value="${hotel.email}" /><br/>
-        <button type="submit">Lưu</button>
-    </form>
+	<h1
+		th:text="${hotel.hotelId != null} ? 'Chỉnh sửa khách sạn' : 'Tạo khách sạn'"></h1>
+	<form
+		th:action="${hotel.hotelId != null} ? @{/hotels/{id}(id=${hotel.hotelId})} : @{/hotels}"
+		method="post">
+		<input type="hidden" name="hotelId" th:value="${hotel.hotelId}" /> <label
+			for="name">Tên:</label> <input type="text" id="name" name="name"
+			th:value="${hotel.name}" /><br /> <label for="location">Địa
+			điểm:</label> <select id="location" name="locationId">
+			<option th:each="loc : ${locations}" th:value="${loc.locationId}"
+				th:text="${loc.name}"
+				th:selected="${hotel.location != null and hotel.location.locationId == loc.locationId}"></option>
+		</select><br /> <label for="address">Địa chỉ:</label> <input type="text"
+			id="address" name="address" th:value="${hotel.address}" /><br /> <label
+			for="phone">Điện thoại:</label> <input type="text" id="phone"
+			name="phone" th:value="${hotel.phone}" /><br /> <label for="email">Email:</label>
+		<input type="text" id="email" name="email" th:value="${hotel.email}" /><br />
+		<button type="submit">Lưu</button>
+	</form>
 </body>
 </html>
