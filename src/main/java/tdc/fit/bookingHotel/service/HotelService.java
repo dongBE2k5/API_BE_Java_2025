@@ -66,17 +66,17 @@ public class HotelService {
     }
     
     // lấy theo Location
-    public ResponseEntity<?> getHotelByLocation(Long locationId ) {
-    	
-    	Location location = locationRepository.findById(locationId)
-    		    .orElseThrow(() -> new EntityNotFoundException("Location not found"));;
-        List<Hotel> hotel = hotelRepository.findByLocationId(location);
-        if (hotel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
-        }
-               
-        return ResponseEntity.ok(hotel);
-    }
+//    public ResponseEntity<?> getHotelByLocation(Long locationId ) {
+//    	
+//    	Location location = locationRepository.findById(locationId)
+//    		    .orElseThrow(() -> new EntityNotFoundException("Location not found"));;
+//        List<Hotel> hotel = hotelRepository.findByLocationId(location);
+//        if (hotel.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
+//        }
+//               
+//        return ResponseEntity.ok(hotel);
+//    }
 
 
     // Tạo mới một khách sạn

@@ -20,26 +20,30 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.websocket.server.PathParam;
 import tdc.fit.bookingHotel.entity.Room;
 import tdc.fit.bookingHotel.repository.RoomRepository;
+import tdc.fit.bookingHotel.service.RoomService;
 
 @RestController
 @RequestMapping("/api/rooms")
-public class RoomController {
+public class RoomControllerAPI {
 
     @Autowired
-    private RoomRepository roomRepository;
+    private RoomService roomService;
     
 
 
     @GetMapping
-    public List<Room> all() {
-        return roomRepository.findAll();
+    public ResponseEntity<?> all() {
+        return ResponseEntity.ok(roomService.getAllRooms());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> find(@PathVariable Long id) {
-        return roomRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> find(@PathVariable Long id) {
+        return ResponseEntity.ok(roomService.getRoomById(id));
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteRoom(@PathVariable Long id) {
+    	ResponseEntity.ok(roomService.deleteRoom(id));
     }
 
     

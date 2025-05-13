@@ -23,8 +23,8 @@ public class HotelControllerAPI {
     private LocationRepository locationRepository;
 
     @GetMapping
-    public List<Hotel> getAllHotels() {
-        return hotelRepository.findAll();
+    public ResponseEntity<?> getAllHotels() {
+        return ResponseEntity.ok(hotelRepository.findAll());
     }
 
     @GetMapping("/{id}")

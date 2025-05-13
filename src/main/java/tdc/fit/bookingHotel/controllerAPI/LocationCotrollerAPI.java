@@ -15,42 +15,40 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.Location;
 import tdc.fit.bookingHotel.repository.LocationRepository;
+import tdc.fit.bookingHotel.service.LocationService;
 
 @RestController
 @RequestMapping("api/location")
 public class LocationCotrollerAPI {
 	
 	   @Autowired
-	    private LocationRepository locationRepository;
+	    private LocationService locationService;
 
 	    // Lấy tất cả các Location
 	    @GetMapping
 	    public ResponseEntity<?> getAllLocations() {
-	        return ResponseEntity.ok(locationRepository.findAll());
+	        return ResponseEntity.ok(locationService.getAllLocations());
 	    }
 
 	    // Lấy Location theo ID
 	    @GetMapping("/{id}")
 	    public ResponseEntity<?> getLocationById(@PathVariable Long id) {
-	        Location location = locationRepository.findById(id)
-	                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
-	        return ResponseEntity.ok(location);
+	      
+	        return ResponseEntity.ok(locationService.getLocationById(id));
 	    }
 
 	    // Tạo mới một Location
 	    @PostMapping
 	    public ResponseEntity<?> createLocation(@RequestBody Location location) {
-	        Location savedLocation = locationRepository.save(location);
-	        return ResponseEntity.ok(savedLocation);
+	    
+	        return ResponseEntity.ok(locationService.createLocation(location));
 	    }
 
 	    // Xóa Location theo ID
 	    @DeleteMapping("/{id}")
 	    public ResponseEntity<?> deleteLocation(@PathVariable Long id) {
-	        Location location = locationRepository.findById(id)
-	                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
-	        locationRepository.delete(location);
-	        return ResponseEntity.ok("Location deleted successfully");
+	       
+	        return ResponseEntity.ok(locationService.deleteLocation(id));
 	    }
 
 	
