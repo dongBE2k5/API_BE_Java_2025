@@ -1,6 +1,10 @@
 package tdc.fit.bookingHotel.service;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
+import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +13,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.Hotel;
 import tdc.fit.bookingHotel.entity.Hotelier;
@@ -66,48 +76,124 @@ public class HotelService {
     }
     
     // lấy theo Location
-//    public ResponseEntity<?> getHotelByLocation(Long locationId ) {
-//    	
-//    	Location location = locationRepository.findById(locationId)
-//    		    .orElseThrow(() -> new EntityNotFoundException("Location not found"));;
-//        List<Hotel> hotel = hotelRepository.findByLocationId(location);
-//        if (hotel.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
-//        }
-//               
-//        return ResponseEntity.ok(hotel);
-//    }
+    public ResponseEntity<?> getHotelByLocation(Long locationId ) {
+    	
+    	Location location = locationRepository.findById(locationId)
+    		    .orElseThrow(() -> new EntityNotFoundException("Location not found"));;
+        List<Hotel> hotel = hotelRepository.findByLocationId(location);
+        if (hotel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
+        }
+               
+        return ResponseEntity.ok(hotel);
+    }
 
 
     // Tạo mới một khách sạn
-    public ResponseEntity<?> createHotel(Hotel hotel) {
-        // Kiểm tra xem location và hotelier có tồn tại không
-        if (locationRepository.existsById(hotel.getLocationId().getLocationId()) &&
-            hotelierRepository.existsById(hotel.getHotelierId().getHotelierId())) {
+//    public ResponseEntity<?> createHotel(Hotel hotel) {
+//        // Kiểm tra xem location và hotelier có tồn tại không
+//        if (locationRepository.existsById(hotel.getLocationId().getLocationId()) &&
+//            hotelierRepository.existsById(hotel.getHotelierId().getHotelierId())) {
+//
+//            Hotel savedHotel = hotelRepository.save(hotel);
+//            return ResponseEntity.ok(savedHotel);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Location or Hotelier not found");
+//        }
+//    }
 
-            Hotel savedHotel = hotelRepository.save(hotel);
-            return ResponseEntity.ok(savedHotel);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Location or Hotelier not found");
+    public ResponseEntity<Hotel> createHotel(@RequestParam("name") String name,
+			@RequestParam("locationId") Long locationID, @RequestParam("address") String address,
+			@RequestParam("status") String status, @RequestParam("hotelierId") Long hotelierId,
+			@RequestParam("image") MultipartFile image) throws IOException {
+		Location location = locationRepository.findById(locationID).orElse(null);
+		Hotelier hotelier = hotelierRepository.findById(hotelierId).orElse(null);
+		if (location != null && hotelier != null && image != null && !image.isEmpty()) {
+			try {
+				String filename = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+				String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/static/uploads";
+				Path filepath = Paths.get(uploadDir, filename);
+				Files.createDirectories(filepath.getParent());
+				image.transferTo(filepath.toFile());
+
+				Hotel hotel = new Hotel();
+				hotel.setName(name);
+				hotel.setAddress(address);
+				hotel.setStatus(status);
+				hotel.setLocationId(location);
+				hotel.setHotelierId(hotelier);
+				hotel.setImage(filename); // Nếu bạn có trường 'image' trong entity
+
+				hotelRepository.save(hotel); // Lưu vào DB
+
+				return ResponseEntity.ok(hotel);
+
+			} catch (IOException e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+
+		}
+		return ResponseEntity.notFound().build();
+	}
+    
+    
+    @PutMapping("/{id}")
+	public ResponseEntity<Hotel> updateHotel(
+	        @PathVariable Long id,
+	        @RequestParam("name") String name,
+	        @RequestParam("locationId") Long locationID,
+	        @RequestParam("address") String address,
+	        @RequestParam("status") String status,
+	        @RequestParam("hotelierId") Long hotelierId,
+	        @RequestPart("image") MultipartFile image) {
+	
+		Location location = locationRepository.findById(locationID).orElse(null);
+		Hotelier hotelier = hotelierRepository.findById(hotelierId).orElse(null);
+		Hotel hotel = hotelRepository.findById(id).orElse(null);
+		deleteUploadedFile(hotel.getImage());
+
+	    if (hotel == null || location == null || hotelier == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+
+	    hotel.setName(name);
+	    hotel.setAddress(address);
+	    hotel.setStatus(status);
+	    hotel.setLocationId(location);
+	    hotel.setHotelierId(hotelier);
+
+	    // Nếu có ảnh mới, thì lưu ảnh và set lại tên file
+	    if (image != null && !image.isEmpty()) {
+	        try {
+	            String filename = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+	            String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/static/uploads";
+	            Path filepath = Paths.get(uploadDir, filename);
+	            Files.createDirectories(filepath.getParent());
+	            image.transferTo(filepath.toFile());
+	            hotel.setImage(filename);
+	        } catch (IOException e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	        }
+	    }
+
+	    hotelRepository.save(hotel);
+	    return ResponseEntity.ok(hotel);
+	}
+
+    public static void deleteUploadedFile(String filename) {
+        if (filename == null || filename.isEmpty()) return;
+
+        try {
+            String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/static/uploads";
+            Path filePath = Paths.get(uploadDir, filename);
+            Files.deleteIfExists(filePath);
+        } catch (Exception e) {
+            System.err.println("Could not delete file: " + filename);
+            e.printStackTrace();
         }
-    }
+        }
 
-    // Cập nhật thông tin khách sạn
-    public ResponseEntity<?> updateHotel(Long hotelId, Hotel hotelDetails) {
-        Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
-
-        // Cập nhật thông tin khách sạn
-        hotel.setName(hotelDetails.getName());
-        hotel.setAddress(hotelDetails.getAddress());
-        hotel.setStatus(hotelDetails.getStatus());
-        hotel.setLocationId(hotelDetails.getLocationId());
-//        hotel.setHotelierId(hotelDetails.getHotelierId());
-        hotel.setImage(hotelDetails.getImage());
-
-        Hotel updatedHotel = hotelRepository.save(hotel);
-        return ResponseEntity.ok(updatedHotel);
-    }
 
     // Xoá khách sạn theo ID
     public ResponseEntity<?> deleteHotel(Long hotelId) {

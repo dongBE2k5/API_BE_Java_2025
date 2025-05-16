@@ -1,4 +1,5 @@
 package tdc.fit.bookingHotel.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -7,23 +8,13 @@ import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.Location;
 import tdc.fit.bookingHotel.repository.LocationRepository;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class LocationService {
 
     @Autowired
     private LocationRepository locationRepository;
 
- // Lấy tất cả các Location
+    // Lấy tất cả các Location
     public ResponseEntity<?> getAllLocations() {
         return ResponseEntity.ok(locationRepository.findAll());
     }
@@ -48,5 +39,20 @@ public class LocationService {
         locationRepository.delete(location);
         return ResponseEntity.ok("Location deleted successfully");
     }
-}
 
+    // Cập nhật Location theo ID
+    public ResponseEntity<?> updateLocation(Long id, Location updatedLocation) {
+        // Kiểm tra xem Location có tồn tại hay không
+        Location existingLocation = locationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location not found"));
+
+        // Cập nhật thông tin Location
+        existingLocation.setName(updatedLocation.getName());  // Cập nhật tên
+        existingLocation.setDescription(updatedLocation.getDescription());  // Cập nhật mô tả
+         // Cập nhật địa chỉ
+
+        // Lưu Location đã được cập nhật
+        Location savedLocation = locationRepository.save(existingLocation);
+        return ResponseEntity.ok(savedLocation);
+    }
+}

@@ -1,7 +1,6 @@
 package tdc.fit.bookingHotel.controllerAPI;
 
 import tdc.fit.bookingHotel.entity.Booking;
-
 import tdc.fit.bookingHotel.service.BookingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,70 +8,61 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingControllerAPI {
 
     @Autowired
-    private  BookingService bookingService;
+    private BookingService bookingService;
 
+    // Lấy tất cả bookings
     @GetMapping
-    public List<Booking> getAllBookings() {
+    public ResponseEntity<?> getAllBookings() {
         return bookingService.getAllBookings();
     }
 
+    // Lấy booking theo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookingById(@PathVariable Integer id) {
         return bookingService.getBookingById(id);
     }
-    
 
+    // Lấy booking theo user (customer)
     @GetMapping("/user")
-    public ResponseEntity<?>  getBookingByCustomer(Authentication authentication) {
-    	
+    public ResponseEntity<?> getBookingByCustomer(Authentication authentication) {
         return bookingService.getBookingByCustomer(authentication);
     }
-    
+
+    // Lấy booking theo hotelier (quản lý khách sạn)
     @GetMapping("/hotelier")
-    public ResponseEntity<?>  getBookingByRoom(Authentication authentication) {
-    	
+    public ResponseEntity<?> getBookingByRoom(Authentication authentication) {
         return bookingService.getBookingByRoom(authentication);
     }
-    
-    
-    @PutMapping("/bookings/{id}/status")
+
+    // Cập nhật trạng thái booking (checkin/checkout)
+    @PutMapping("/{id}/status")
     public ResponseEntity<?> updateBookingStatus(@PathVariable Integer id, @RequestParam String action) {
         return bookingService.updateBookingStatus(id, action);
     }
-    
-    
+
+    // Tạo booking mới
     @PostMapping
-    public ResponseEntity<?>  createBooking(@RequestBody Booking booking,Authentication authentication) {
-       
-        return bookingService.createBooking(booking, booking.getRoom().getRoomId(),authentication);
+    public ResponseEntity<?> createBooking(@RequestBody Booking booking, Authentication authentication) {
+        if (booking.getRoom() == null || booking.getRoom().getRoomId() == null) {
+            return ResponseEntity.badRequest().body("Room ID must be provided in the booking data.");
+        }
+        return bookingService.createBooking(booking, booking.getRoom().getRoomId(), authentication);
     }
 
-//    @PostMapping
-//    public Booking createBooking(@RequestBody Booking booking) {
-//        // TODO: Thêm logic kiểm tra phòng trống
-//        return bookingRepository.save(booking);
-//    }
-
-//    @PutMapping("/{id}")
-//    public Booking updateBooking(@PathVariable Integer id, @RequestBody Booking bookingDetails) {
-//        return bookingService.editBooking(id, bookingDetails);
-//    }
-
+    // Xóa booking (dành cho admin hoặc hệ thống)
     @DeleteMapping("/{id}")
-    public void deleteBooking(@PathVariable Integer id) {
-         bookingService.deleteBooking(id);
+    public ResponseEntity<?> deleteBooking(@PathVariable Integer id) {
+        return bookingService.deleteBooking(id);
     }
-    
-    
+
+    // Xóa booking thuộc về user hiện tại
     @DeleteMapping("/user/{id}")
-    public void deleteUserBooking(@PathVariable Integer id ,Authentication authentication) {
-         bookingService.deleteUserBooking(id,authentication);
+    public ResponseEntity<?> deleteUserBooking(@PathVariable Integer id, Authentication authentication) {
+        return bookingService.deleteUserBooking(id, authentication);
     }
 }

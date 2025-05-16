@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tdc.fit.bookingHotel.Util.JwtUtil;
+import tdc.fit.bookingHotel.entity.User;
+import tdc.fit.bookingHotel.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,6 +24,12 @@ public class AuthControllerAPI {
 	
 	   @Autowired
 	    private AuthenticationManager authenticationManager;
+	   
+	   @Autowired
+	   private UserRepository userRepository;
+
+	   @Autowired
+	   private PasswordEncoder passwordEncoder;
 
 	    @Autowired
 	    private JwtUtil jwtUtil;
@@ -37,5 +46,33 @@ public class AuthControllerAPI {
 	        response.put("token", jwt);
 	        return ResponseEntity.ok(response);
 	    }
+	    
+	    @PostMapping("/register")
+	    public ResponseEntity<?> register(
+	            @RequestParam String username,
+	            @RequestParam String password
+	         
+	    ) {
+	        // Kiểm tra trùng username
+	        if (userRepository.existsByUsername(username)) {
+	            return ResponseEntity.badRequest().body("Username already exists");
+	        }
+
+	        // Tạo user mới
+	        User newUser = new User();
+	        newUser.setUsername(username);
+	        newUser.setPassword(passwordEncoder.encode(password)); // mã hoá mật khẩu
+	     
+	        newUser.setRoles("ROLE_USER"); // hoặc "HOTELIER" tuỳ theo hệ thống của bạn
+
+	        userRepository.save(newUser);
+
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("message", "Registration successful");
+	        response.put("username", username);
+
+	        return ResponseEntity.ok(response);
+	    }
+
 
 }

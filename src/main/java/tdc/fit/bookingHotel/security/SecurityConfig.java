@@ -61,11 +61,11 @@ public class SecurityConfig {
         webExpressionHandler.setRoleHierarchy(roleHierarchy); // QUAN TRỌNG
 
         http
-//            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())
 //            .authorizeHttpRequests(auth -> auth
-//                .expressionHandler(webExpressionHandler)  // QUAN TRỌNG
-//                .requestMatchers("/login", "/register", "/api/auth/**", "/css/**", "/js/**").permitAll()
-//                .requestMatchers("/admin/**").hasRole("ADMIN") // SUPERADMIN sẽ có quyền này
+////                .expressionHandler(webExpressionHandler)  // QUAN TRỌNG
+//                .requestMatchers("/login", "/register", "/api/auth/**", "/css/**", "/js/**","/swagger-ui/index.html").permitAll()
+//                .requestMatchers("/admin/**").hasRole("SUPER_ADMIN") // SUPERADMIN sẽ có quyền này
 //                .anyRequest().authenticated()
 //            )
 //            .formLogin(form -> form

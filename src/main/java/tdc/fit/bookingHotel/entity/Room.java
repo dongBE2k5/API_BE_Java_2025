@@ -45,7 +45,7 @@ public class Room {
     private int capacity;
 
     @Column(name = "description")
-    private int description;
+    private String description;
     
     @ManyToOne
     @JoinColumn(name = "hotel_id")
@@ -111,11 +111,11 @@ public class Room {
 		this.capacity = capacity;
 	}
 
-	public int getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(int description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

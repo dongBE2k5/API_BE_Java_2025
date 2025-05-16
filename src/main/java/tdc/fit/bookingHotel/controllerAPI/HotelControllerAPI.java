@@ -5,11 +5,15 @@ import tdc.fit.bookingHotel.entity.Location;
 import tdc.fit.bookingHotel.entity.DTO.HotelDTO;
 import tdc.fit.bookingHotel.repository.HotelRepository;
 import tdc.fit.bookingHotel.repository.LocationRepository;
+import tdc.fit.bookingHotel.service.HotelService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,62 +21,47 @@ import java.util.List;
 public class HotelControllerAPI {
 
     @Autowired
-    private HotelRepository hotelRepository;
+    private HotelService hotelService;
     
-    @Autowired
-    private LocationRepository locationRepository;
-
+  
     @GetMapping
     public ResponseEntity<?> getAllHotels() {
-        return ResponseEntity.ok(hotelRepository.findAll());
+        return ResponseEntity.ok(hotelService.getAllHotels());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Hotel> getHotelById(@PathVariable Long id) {
-        return hotelRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getHotelById(@PathVariable Long id) {
+        return ResponseEntity.ok(hotelService.getHotelById(id)) ;
+    }
+    
+    @GetMapping("/location/{id}")
+    public ResponseEntity<?> getHotelByLocation(@PathVariable Long id) {
+        return ResponseEntity.ok(hotelService.getHotelByLocation(id)) ;
+    }
+    
+
+    @PostMapping( consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> createHotel(@RequestParam("name") String name,
+			@RequestParam("locationId") Long locationID, @RequestParam("address") String address,
+			@RequestParam("status") String status, @RequestParam("hotelierId") Long hotelierId,
+			@RequestParam("image") MultipartFile image) throws IOException {
+    
+    	return ResponseEntity.ok(hotelService.createHotel(name,locationID,address,status,hotelierId,image));
     }
 
-    @PostMapping
-    public ResponseEntity<Hotel> createHotel(@RequestBody HotelDTO hotelDTO) {
-    	Location location = locationRepository.findById(hotelDTO.getLocationId()).orElse(null);
-    	if(location != null) {
-    		Hotel hotel = new Hotel();
-    		hotel.setAddress(hotelDTO.getAddress());
-    	
-    		hotel.setName(hotelDTO.getName());
-
-    		hotel.setStatus(hotelDTO.getStatus());
-    		hotel.setLocationId(location);
-            return ResponseEntity.ok(hotel);
-
-    	}
-    	return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Hotel> updateHotel(@PathVariable Long id, @RequestBody HotelDTO hotelDTO) {
-    	Location location = locationRepository.findById(hotelDTO.getLocationId()).orElse(null);
-    	
-        return hotelRepository.findById(id)
-                .map(hotel -> {
-                    hotel.setName(hotelDTO.getName());
-                    hotel.setLocationId(location);
-                    hotel.setAddress(hotelDTO.getAddress());
-
-                    return ResponseEntity.ok(hotelRepository.save(hotel));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PutMapping(value="/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateHotel(@PathVariable Long id,
+	        @RequestParam("name") String name,
+	        @RequestParam("locationId") Long locationID,
+	        @RequestParam("address") String address,
+	        @RequestParam("status") String status,
+	        @RequestParam("hotelierId") Long hotelierId,
+	        @RequestPart("image") MultipartFile image) {
+    	return ResponseEntity.ok(hotelService.updateHotel(id, name,locationID,address,status,hotelierId,image));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
-        return hotelRepository.findById(id)
-                .map(hotel -> {
-                    hotelRepository.delete(hotel);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> deleteHotel(@PathVariable Long id) {
+        return ResponseEntity.ok(hotelService.deleteHotel(id));
     }
 }

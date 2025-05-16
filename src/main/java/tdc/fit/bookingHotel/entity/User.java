@@ -43,12 +43,30 @@ public class User {
     private String roles; // danh sách quyền (dạng chuỗi, phân cách bằng dấu phẩy): "ROLE_USER,ROLE_ADMIN"
 
     
+    
     @OneToOne(mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
 	private Customer customer;
     
     
-    public String getUsername() { return username; }
+    @OneToOne(mappedBy = "userId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+	private Hotelier hotelier;
+    
+    
+    public Customer getCustomer() {
+		return customer;
+	}
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+	public Hotelier getHotelier() {
+		return hotelier;
+	}
+	public void setHotelier(Hotelier hotelier) {
+		this.hotelier = hotelier;
+	}
+	public String getUsername() { return username; }
     public Long getUserId() {
         return userId;
     }
