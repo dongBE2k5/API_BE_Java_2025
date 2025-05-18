@@ -3,12 +3,17 @@ package tdc.fit.bookingHotel.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import tdc.fit.bookingHotel.Json.BookingSerializer;
+import tdc.fit.bookingHotel.Json.CustomerSerializer;
 
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+
+@JsonSerialize(using = BookingSerializer.class)
 @Entity
 @Table(name = "bookings")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "bookingId")

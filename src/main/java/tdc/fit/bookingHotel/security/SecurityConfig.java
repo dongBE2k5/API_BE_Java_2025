@@ -65,7 +65,7 @@ public class SecurityConfig {
 //            .authorizeHttpRequests(auth -> auth
 ////                .expressionHandler(webExpressionHandler)  // QUAN TRỌNG
 //                .requestMatchers("/login", "/register", "/api/auth/**", "/css/**", "/js/**","/swagger-ui/index.html").permitAll()
-//                .requestMatchers("/admin/**").hasRole("SUPER_ADMIN") // SUPERADMIN sẽ có quyền này
+//                .requestMatchers("/admin/**").hasRole("SUPERADMIN") // SUPERADMIN sẽ có quyền này
 //                .anyRequest().authenticated()
 //            )
 //            .formLogin(form -> form

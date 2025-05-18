@@ -4,6 +4,7 @@ package tdc.fit.bookingHotel.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import tdc.fit.bookingHotel.Json.RoomSerializer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize(using = RoomSerializer.class)
 @Entity
 @Table(name = "rooms")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "roomId")
@@ -29,7 +32,7 @@ public class Room {
 
     @ManyToOne
     @JoinColumn(name = "room_type_id")
-    private RoomType roomTypeId;
+    private RoomType roomType;
 
     @Column(name = "status")
     private String status;
@@ -71,12 +74,21 @@ public class Room {
 		this.roomNumber = roomNumber;
 	}
 
-	public RoomType getRoomTypeId() {
-		return roomTypeId;
+	
+	public RoomType getRoomType() {
+		return roomType;
 	}
 
-	public void setRoomTypeId(RoomType roomTypeId) {
-		this.roomTypeId = roomTypeId;
+	public void setRoomType(RoomType roomType) {
+		this.roomType = roomType;
+	}
+
+	public List<Booking> getBookings() {
+		return bookings;
+	}
+
+	public void setBookings(List<Booking> bookings) {
+		this.bookings = bookings;
 	}
 
 	public String getStatus() {

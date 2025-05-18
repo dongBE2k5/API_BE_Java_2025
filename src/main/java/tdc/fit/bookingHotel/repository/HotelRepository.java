@@ -12,7 +12,9 @@ import tdc.fit.bookingHotel.entity.Location;
 
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
-    List<Hotel> findByHotelierId(Hotelier hotelier);
-    List<Hotel> findByHotelierIdIn(List<Hotelier> hoteliers);
-    List<Hotel> findByLocationId(Location location);
+	
+    List<Hotel> findByHotelier(Hotelier hotelier);
+    List<Hotel> findByHotelierIn(List<Hotelier> hoteliers);
+    List<Hotel> findByLocation(Location location);
+    List<Hotel> findByLocationIn(List<Location> location);
 }

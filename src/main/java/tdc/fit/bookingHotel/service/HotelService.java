@@ -45,7 +45,7 @@ public class HotelService {
     private UserRepository userRepository;
     
     // Lấy tất cả các khách sạn
-//    @PreAuthorize("hasAuthority('ROLE_SUPPERADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public ResponseEntity<?> getAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
         return ResponseEntity.ok(hotels);
@@ -67,7 +67,7 @@ public class HotelService {
              .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	 Hotelier hotelier = hotelierRepository.findByUserId(user);
 	 
-        List<Hotel> hotel = hotelRepository.findByHotelierId(hotelier);
+        List<Hotel> hotel = hotelRepository.findByHotelier(hotelier);
         if (hotel.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
         }
@@ -80,7 +80,7 @@ public class HotelService {
     	
     	Location location = locationRepository.findById(locationId)
     		    .orElseThrow(() -> new EntityNotFoundException("Location not found"));;
-        List<Hotel> hotel = hotelRepository.findByLocationId(location);
+        List<Hotel> hotel = hotelRepository.findByLocation(location);
         if (hotel.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
         }
@@ -120,8 +120,8 @@ public class HotelService {
 				hotel.setName(name);
 				hotel.setAddress(address);
 				hotel.setStatus(status);
-				hotel.setLocationId(location);
-				hotel.setHotelierId(hotelier);
+				hotel.setLocation(location);
+				hotel.setHotelier(hotelier);
 				hotel.setImage(filename); // Nếu bạn có trường 'image' trong entity
 
 				hotelRepository.save(hotel); // Lưu vào DB
@@ -137,49 +137,53 @@ public class HotelService {
 	}
     
     
-    @PutMapping("/{id}")
-	public ResponseEntity<Hotel> updateHotel(
-	        @PathVariable Long id,
-	        @RequestParam("name") String name,
-	        @RequestParam("locationId") Long locationID,
-	        @RequestParam("address") String address,
-	        @RequestParam("status") String status,
-	        @RequestParam("hotelierId") Long hotelierId,
-	        @RequestPart("image") MultipartFile image) {
-	
-		Location location = locationRepository.findById(locationID).orElse(null);
-		Hotelier hotelier = hotelierRepository.findById(hotelierId).orElse(null);
-		Hotel hotel = hotelRepository.findById(id).orElse(null);
-		deleteUploadedFile(hotel.getImage());
 
-	    if (hotel == null || location == null || hotelier == null) {
-	        return ResponseEntity.notFound().build();
-	    }
+    public ResponseEntity<Hotel> updateHotel(
+            @PathVariable Long id,
+            @RequestParam("name") String name,
+            @RequestParam("locationId") Long locationID,
+            @RequestParam("address") String address,
+            @RequestParam("status") String status,
+            @RequestParam("hotelierId") Long hotelierId,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) {
+        // 1. Lấy các entity liên quan
+        Hotel hotel = hotelRepository.findById(id).orElse(null);
+        Location location = locationRepository.findById(locationID).orElse(null);
+        Hotelier hotelier = hotelierRepository.findById(hotelierId).orElse(null);
 
+        // 2. Kiểm tra tồn tại
+        if (hotel == null || location == null || hotelier == null) {
+            return ResponseEntity.notFound().build();
+        }
 
-	    hotel.setName(name);
-	    hotel.setAddress(address);
-	    hotel.setStatus(status);
-	    hotel.setLocationId(location);
-	    hotel.setHotelierId(hotelier);
+        // 3. Nếu có ảnh mới, xoá ảnh cũ và lưu ảnh mới
+        if (image != null && !image.isEmpty()) {
+            deleteUploadedFile(hotel.getImage());
+            try {
+                String filename = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+                String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/static/uploads";
+                Path filepath = Paths.get(uploadDir, filename);
+                Files.createDirectories(filepath.getParent());
+                image.transferTo(filepath.toFile());
+                hotel.setImage(filename);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
 
-	    // Nếu có ảnh mới, thì lưu ảnh và set lại tên file
-	    if (image != null && !image.isEmpty()) {
-	        try {
-	            String filename = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-	            String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/static/uploads";
-	            Path filepath = Paths.get(uploadDir, filename);
-	            Files.createDirectories(filepath.getParent());
-	            image.transferTo(filepath.toFile());
-	            hotel.setImage(filename);
-	        } catch (IOException e) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	        }
-	    }
+        // 4. Cập nhật thông tin khách sạn
+        hotel.setName(name);
+        hotel.setAddress(address);
+        hotel.setStatus(status);
+        hotel.setLocation(location);
+        hotel.setHotelier(hotelier);
 
-	    hotelRepository.save(hotel);
-	    return ResponseEntity.ok(hotel);
-	}
+        // 5. Lưu và trả về
+        hotelRepository.save(hotel);
+        return ResponseEntity.ok(hotel);
+    }
+
 
     public static void deleteUploadedFile(String filename) {
         if (filename == null || filename.isEmpty()) return;

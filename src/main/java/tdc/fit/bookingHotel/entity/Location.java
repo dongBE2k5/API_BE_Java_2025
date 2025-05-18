@@ -6,11 +6,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import tdc.fit.bookingHotel.Json.LocationSerializer;
+
+@JsonSerialize(using = LocationSerializer.class)
 @Entity
 @Table(name = "locations")
 @Getter
@@ -32,7 +36,8 @@ public class Location {
     @Column(name = "image")
     private String image;
     
-    @OneToMany(mappedBy = "locationId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    @JsonManagedReference
     @JsonIgnore
     private List<Hotel> hotels = new ArrayList<>();
 

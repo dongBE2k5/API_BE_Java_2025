@@ -42,7 +42,7 @@ public class HotelController {
         Hotel hotel = new Hotel();
         hotel.setName(name);
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
-        hotel.setLocationId(location);
+        hotel.setLocation(location);
         hotel.setAddress(address);
     
         hotelRepository.save(hotel);
@@ -63,7 +63,7 @@ public class HotelController {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid hotel Id:" + id));
         hotel.setName(name);
         Location location = locationRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationId));
-        hotel.setLocationId(location);
+        hotel.setLocation(location);
         hotel.setAddress(address);
 
         hotelRepository.save(hotel);

@@ -130,7 +130,7 @@ public class BookingService {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             Hotelier hotelier = hotelierRepository.findByUserId(user);
-            List<Hotel> hotels = hotelRepository.findByHotelierId(hotelier);
+            List<Hotel> hotels = hotelRepository.findByHotelier(hotelier);
             List<Room> rooms = roomRepository.findByHotelIn(hotels);
             List<Booking> bookings = bookingRepository.findByRoomIn(rooms);
 

@@ -3,12 +3,21 @@ package tdc.fit.bookingHotel.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import tdc.fit.bookingHotel.Json.HotelSerializer;
+import tdc.fit.bookingHotel.Json.HotelierSerializer;
+import tdc.fit.bookingHotel.Json.LocationSerializer;
+
+
+@JsonSerialize(using = HotelSerializer.class)
 @Entity
 @Table(name = "hotels")
 @Getter
@@ -23,10 +32,13 @@ public class Hotel {
     @Column(name = "name")
     private String name;
 
-
-    @ManyToOne
+ 
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
-    private Location locationId;
+    @JsonSerialize(using = LocationSerializer.class)
+//  @JsonIgnoreProperties({"hotels"})
+    private Location location;
+//    @JsonBackReference
 
     @Column(name = "address")
     private String address;
@@ -35,9 +47,11 @@ public class Hotel {
     @Column(name = "status")
     private String status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotelier_id")
-    private Hotelier hotelierId;
+    @JsonSerialize(using = HotelierSerializer.class)
+//    @JsonIgnoreProperties({"hotels"}) 
+    private Hotelier hotelier;
     
     
     @Lob
@@ -45,12 +59,12 @@ public class Hotel {
     private String image;
 
     
-	public Hotelier getHotelierId() {
-		return hotelierId;
+	public Hotelier getHotelier() {
+		return hotelier;
 	}
 
-	public void setHotelierId(Hotelier hotelierId) {
-		this.hotelierId = hotelierId;
+	public void setHotelier(Hotelier hotelier) {
+		this.hotelier = hotelier;
 	}
 
 	public String getImage() {
@@ -78,12 +92,13 @@ public class Hotel {
 		this.hotelId = hotelId;
 	}
 
-	public Location getLocationId() {
-		return locationId;
+	
+	public Location getLocation() {
+		return location;
 	}
 
-	public void setLocationId(Location locationId) {
-		this.locationId = locationId;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public String getAddress() {
@@ -106,8 +121,8 @@ public class Hotel {
 
 	@Override
 	public String toString() {
-		return "Hotel [hotelId=" + hotelId + ", name=" + name + ", locationId=" + locationId + ", address=" + address
-				+ ", status=" + status + ", hotelierId=" + hotelierId + ", image=" + image + "]";
+		return "Hotel [hotelId=" + hotelId + ", name=" + name + ", locationId=" + location + ", address=" + address
+				+ ", status=" + status + ", hotelierId=" + hotelier + ", image=" + image + "]";
 	}
     
 	
