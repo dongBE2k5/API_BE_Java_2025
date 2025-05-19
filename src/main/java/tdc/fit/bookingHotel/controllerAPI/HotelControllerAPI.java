@@ -10,6 +10,7 @@ import tdc.fit.bookingHotel.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +40,14 @@ public class HotelControllerAPI {
         return ResponseEntity.ok(hotelService.getHotelByLocation(id)) ;
     }
     
+    @GetMapping("/hotelier/{id}")
+    public ResponseEntity<?> getHotelHotelier(@PathVariable Long id ) {
+        return ResponseEntity.ok(hotelService.getHotelByHotelier(id)) ;
+    }
+    @GetMapping("/hotelier/")
+    public ResponseEntity<?> getHotelHotelier(Authentication authentication) {
+        return ResponseEntity.ok(hotelService.getHotelByHotelier(authentication)) ;
+    }
 
     @PostMapping( consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> createHotel(@RequestParam("name") String name,

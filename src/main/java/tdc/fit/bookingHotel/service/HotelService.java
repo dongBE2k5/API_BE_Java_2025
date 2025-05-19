@@ -45,7 +45,7 @@ public class HotelService {
     private UserRepository userRepository;
     
     // Lấy tất cả các khách sạn
-    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public ResponseEntity<?> getAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
         return ResponseEntity.ok(hotels);
@@ -75,6 +75,21 @@ public class HotelService {
         return ResponseEntity.ok(hotel);
     }
     
+    public ResponseEntity<?> getHotelByHotelier(Long id) {
+    	
+//      	 String username = authentication.getName();
+////   	 User user = userRepository.findById(id)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+   	 Hotelier hotelier = hotelierRepository.findById(id)
+   			 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+   	 
+           List<Hotel> hotel = hotelRepository.findByHotelier(hotelier);
+           if (hotel.isEmpty()) {
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hotels found");
+           }
+                  
+           return ResponseEntity.ok(hotel);
+       }
     // lấy theo Location
     public ResponseEntity<?> getHotelByLocation(Long locationId ) {
     	
