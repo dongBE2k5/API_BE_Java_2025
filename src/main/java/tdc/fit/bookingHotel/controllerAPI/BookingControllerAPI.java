@@ -1,6 +1,7 @@
 package tdc.fit.bookingHotel.controllerAPI;
 
 import tdc.fit.bookingHotel.entity.Booking;
+import tdc.fit.bookingHotel.entity.DTO.BookingDTO;
 import tdc.fit.bookingHotel.service.BookingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +49,22 @@ public class BookingControllerAPI {
     // Tạo booking mới
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody Booking booking, Authentication authentication) {
+        System.out.println(authentication.getName());
         if (booking.getRoom() == null || booking.getRoom().getRoomId() == null) {
             return ResponseEntity.badRequest().body("Room ID must be provided in the booking data.");
         }
         return bookingService.createBooking(booking, booking.getRoom().getRoomId(), authentication);
+    }
+
+    @PostMapping("/booking-new")
+    public ResponseEntity<?> createBookingNew(@RequestBody BookingDTO bookingDTO) {
+        return ResponseEntity.ok(bookingService.createBookingNew(bookingDTO)) ;
+
+    }
+
+    @GetMapping("/customerId/{id}")
+    public ResponseEntity<?> getBookingByCustomerID(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getBookingByCustomerID(id));
     }
 
     // Xóa booking (dành cho admin hoặc hệ thống)

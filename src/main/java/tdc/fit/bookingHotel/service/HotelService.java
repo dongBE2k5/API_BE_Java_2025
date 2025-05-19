@@ -45,14 +45,13 @@ public class HotelService {
     private UserRepository userRepository;
     
     // Lấy tất cả các khách sạn
-    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public ResponseEntity<?> getAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
         return ResponseEntity.ok(hotels);
     }
 
     // Lấy khách sạn theo ID
-    
     public ResponseEntity<?> getHotelById(Long hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));

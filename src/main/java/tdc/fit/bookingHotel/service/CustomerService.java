@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.Customer;
+import tdc.fit.bookingHotel.entity.DTO.CustomerDTO;
+import tdc.fit.bookingHotel.entity.Hotel;
 import tdc.fit.bookingHotel.entity.User;
 import tdc.fit.bookingHotel.repository.CustomerRepository;
 import tdc.fit.bookingHotel.repository.UserRepository;
@@ -30,9 +32,10 @@ public class CustomerService {
     }
 
     // Lấy customer theo id
-    public Customer getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId)
-            .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+    public ResponseEntity<?> getCustomerById(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
+        return ResponseEntity.ok(customer);
     }
 
     // Tạo một customer mới
@@ -45,6 +48,16 @@ public class CustomerService {
         // Gán User cho Customer (không lấy từ client nữa)
         customer.setUserId(user);
 
+        return ResponseEntity.ok(customerRepository.save(customer));
+    }
+
+    // Lấy customer theo id
+    public ResponseEntity<?> editCustomerNew(Long customerId, CustomerDTO customerDTO) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
+        customer.setCccd(customerDTO.getCccd());
+        customer.setFullname(customerDTO.getFullName());
+        customer.setPhone(customerDTO.getPhone());
         return ResponseEntity.ok(customerRepository.save(customer));
     }
 

@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@JsonSerialize(using = RoomSerializer.class)
 @Entity
 @Table(name = "rooms")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "roomId")

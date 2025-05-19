@@ -31,4 +31,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	   List<Booking> findByRoomIn(List<Room> rooms);
 	   
 	   void deleteByCustomerAndBookingId(Customer customer, Integer bookingId);
+
+	List<Booking> findByCustomer_CustomerId(Long id);
 }

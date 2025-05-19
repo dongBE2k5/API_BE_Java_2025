@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tdc.fit.bookingHotel.Util.JwtUtil;
 import tdc.fit.bookingHotel.entity.Customer;
+import tdc.fit.bookingHotel.entity.DTO.CustomerDTO;
 import tdc.fit.bookingHotel.entity.Hotel;
 import tdc.fit.bookingHotel.entity.Location;
 import tdc.fit.bookingHotel.entity.User;
@@ -36,6 +37,11 @@ public class CustomerControllerAPI {
 		return customerService.getAllCustomers();
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<?> find(@PathVariable Long id) {
+		return ResponseEntity.ok(customerService.getCustomerById(id)) ;
+	}
+
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Customer customer,Authentication authentication) {
 
@@ -45,6 +51,11 @@ public class CustomerControllerAPI {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
 		return customerService.editCustomer(id, customer);
+	}
+
+	@PutMapping("/customer-new/{id}")
+	public ResponseEntity<?> updateCustomerNew(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
+		return ResponseEntity.ok(customerService.editCustomerNew(id, customerDTO));
 	}
 
 //	    @DeleteMapping("/{id}")

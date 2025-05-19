@@ -90,4 +90,15 @@ public class Booking {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return "Booking{" +
+				"bookingId=" + bookingId +
+				", customer=" + customer +
+				", room=" + room +
+				", checkInDate=" + checkInDate +
+				", checkOutDate=" + checkOutDate +
+				", status='" + status + '\'' +
+				'}';
+	}
 }

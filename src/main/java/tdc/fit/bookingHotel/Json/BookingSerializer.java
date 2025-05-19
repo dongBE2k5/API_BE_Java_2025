@@ -37,6 +37,9 @@ public class BookingSerializer extends JsonSerializer<Booking> {
             gen.writeStringField("roomNumber", booking.getRoom().getRoomNumber());
             gen.writeStringField("status", booking.getRoom().getStatus());
             gen.writeNumberField("price", booking.getRoom().getPrice().doubleValue());
+            gen.writeNumberField("capacity", booking.getRoom().getCapacity());
+            gen.writeStringField("image", booking.getRoom().getImage());
+            gen.writeStringField("description", booking.getRoom().getDescription());
             gen.writeEndObject();
         } else {
             gen.writeNullField("room");
