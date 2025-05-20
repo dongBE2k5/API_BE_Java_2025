@@ -43,11 +43,12 @@ public class CustomerService {
     	 User user = userRepository.findById(id)
                  .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     	 
-        Customer customer = customerRepository.findByUserId(user);
-        if (customer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                 .body("Customer not found for user id: " + id);
-        }
+    	  Customer customer = customerRepository.findByUserId(user);
+    	    
+    	    if (customer == null || customer.getCustomerId() == null) {
+    	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    	                .body("Customer not found for user id: " + id);
+    	    }
         return ResponseEntity.ok(customer);
     }
 
