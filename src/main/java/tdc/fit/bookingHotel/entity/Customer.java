@@ -40,8 +40,9 @@ public class Customer {
 	@Column(name = "fullname")
 	private String fullname;
 
-	@Column(nullable = false)
+	@Nullable
 	private String email;
+	
 	@Nullable
 	private String phone;
 	@Nullable

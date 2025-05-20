@@ -41,21 +41,36 @@ public class CustomerControllerAPI {
 	public ResponseEntity<?> find(@PathVariable Long id) {
 		return ResponseEntity.ok(customerService.getCustomerById(id)) ;
 	}
+	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<?> getCustomerByUserId(@PathVariable Long id) {
+		return ResponseEntity.ok(customerService.getCustomerByUserId(id)) ;
+	}
 
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody Customer customer,Authentication authentication) {
 
 		return customerService.createCustomer(customer,authentication);
 	}
+	@PostMapping("/created/{id}")
+	public ResponseEntity<?> create(@PathVariable Long id) {
 
+		return ResponseEntity.ok(customerService.createCustomer(id));
+	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
 		return customerService.editCustomer(id, customer);
 	}
 
+//	qua id customer
 	@PutMapping("/customer-new/{id}")
 	public ResponseEntity<?> updateCustomerNew(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
 		return ResponseEntity.ok(customerService.editCustomerNew(id, customerDTO));
+	}
+//qua id user
+	@PutMapping("/userNew/{id}")
+	public ResponseEntity<?> updateUserNew(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
+		return ResponseEntity.ok(customerService.editCustomerByUserId(id, customerDTO));
 	}
 
 //	    @DeleteMapping("/{id}")

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,11 +40,15 @@ public class AuthControllerAPI {
 	        Authentication authentication = authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(username, password)
 	        );
-
+	        User newUser = userRepository.findByUsername(username)
+	        		.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	   
 	        String jwt = jwtUtil.generateToken(username);
-
+	        
 	        Map<String, String> response = new HashMap<>();
 	        response.put("token", jwt);
+	        response.put("username", username);
+	        response.put("id",newUser.getUserId().toString());
 	        return ResponseEntity.ok(response);
 	    }
 	    

@@ -3,6 +3,7 @@ package tdc.fit.bookingHotel.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,19 @@ public class CustomerService {
     // Lấy customer theo id
     public ResponseEntity<?> getCustomerById(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        return ResponseEntity.ok(customer);
+    }
+    
+    public ResponseEntity<?> getCustomerByUserId(Long id) {
+    	 User user = userRepository.findById(id)
+                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    	 
+        Customer customer = customerRepository.findByUserId(user);
+        if (customer == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                 .body("Customer not found for user id: " + id);
+        }
         return ResponseEntity.ok(customer);
     }
 
@@ -47,6 +60,19 @@ public class CustomerService {
 
         // Gán User cho Customer (không lấy từ client nữa)
         customer.setUserId(user);
+
+        return ResponseEntity.ok(customerRepository.save(customer));
+    }
+    public  ResponseEntity<?> createCustomer(Long id ) {
+    	// Lấy username từ Authentication
+     
+        User user = userRepository.findById(id)
+                      .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Gán User cho Customer (không lấy từ client nữa)
+        Customer customer= new Customer();
+        customer.setUserId(user);
+       
 
         return ResponseEntity.ok(customerRepository.save(customer));
     }
@@ -70,6 +96,7 @@ public class CustomerService {
     // Chỉnh sửa thông tin customer
 //    @PreAuthorize("hasPermission(#customerId, 'edit')")
     public ResponseEntity<?> editCustomer(Long customerId, Customer updatedCustomer) {
+    	
         Customer existingCustomer = customerRepository.findById(customerId)
             .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
@@ -77,6 +104,23 @@ public class CustomerService {
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setPhone(updatedCustomer.getPhone());
         existingCustomer.setCccd(updatedCustomer.getCccd());
+        return ResponseEntity.ok(customerRepository.save(existingCustomer));
+    }
+    
+ public ResponseEntity<?> editCustomerByUserId(Long id, CustomerDTO customerDTO) {
+	 
+	 User user = userRepository.findById(id)
+             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Customer existingCustomer = customerRepository.findByUserId(user);
+        		 if (existingCustomer == null) {
+        	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        	                                 .body("Customer not found for user id: " + id);
+        	        }
+
+        existingCustomer.setFullname(customerDTO.getFullName());
+        existingCustomer.setEmail(customerDTO.getEmail());
+        existingCustomer.setPhone(customerDTO.getPhone());
+        existingCustomer.setCccd(customerDTO.getCccd());
         return ResponseEntity.ok(customerRepository.save(existingCustomer));
     }
 }
