@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import tdc.fit.bookingHotel.Filter.JwtFilter;
 import tdc.fit.bookingHotel.testUser.CustomPermissionEvaluator;
 @Configuration
@@ -62,12 +61,13 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
-//            .authorizeHttpRequests(auth -> auth
+            .authorizeHttpRequests(auth -> auth
 ////                .expressionHandler(webExpressionHandler)  // QUAN TRỌNG
-//                .requestMatchers("/login", "/register", "/api/auth/**", "/css/**", "/js/**","/swagger-ui/index.html").permitAll()
-//                .requestMatchers("/admin/**").hasRole("SUPERADMIN") // SUPERADMIN sẽ có quyền này
-//                .anyRequest().authenticated()
-//            )
+                .requestMatchers("/login", "/register", "/api/auth/**", "/css/**", "/js/**","/swagger-ui/index.html/**",
+                		"/api/**","/api/rooms/**","/api/location/**","/uploads/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("SUPERADMIN") // SUPERADMIN sẽ có quyền này
+                .anyRequest().authenticated()
+            )
 //            .formLogin(form -> form
 //                .loginPage("/login")
 //                .defaultSuccessUrl("/posts", true)

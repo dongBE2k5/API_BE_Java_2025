@@ -49,6 +49,7 @@ public class AuthControllerAPI {
 	        response.put("token", jwt);
 	        response.put("username", username);
 	        response.put("id",newUser.getUserId().toString());
+	        response.put("role",newUser.getRoles());
 	        return ResponseEntity.ok(response);
 	    }
 	    

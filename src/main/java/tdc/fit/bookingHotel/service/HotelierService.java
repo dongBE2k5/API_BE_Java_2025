@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.Hotelier;
 import tdc.fit.bookingHotel.repository.HotelierRepository;
 
+
+
+@PreAuthorize("hasAuthority('ROLE_SUPERADMIN') or hasAuthority('ROLE_ADMIN') ")
 @Service
 public class HotelierService {
 
@@ -18,12 +22,14 @@ public class HotelierService {
     private HotelierRepository hotelierRepository;
 
     // Lấy tất cả Hoteliers
+
     public ResponseEntity<?> getAllHoteliers() {
         List<Hotelier> hoteliers = hotelierRepository.findAll();
         return ResponseEntity.ok(hoteliers);
     }
 
     // Lấy Hotelier theo ID
+    
     public ResponseEntity<?> getHotelierById(Long id) {
     	Hotelier hotelier=hotelierRepository.findById(id)
             

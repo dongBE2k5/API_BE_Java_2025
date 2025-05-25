@@ -25,19 +25,19 @@ public class BookingControllerAPI {
     // Lấy booking theo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookingById(@PathVariable Integer id) {
-        return bookingService.getBookingById(id);
+        return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     // Lấy booking theo user (customer)
     @GetMapping("/user")
     public ResponseEntity<?> getBookingByCustomer(Authentication authentication) {
-        return bookingService.getBookingByCustomer(authentication);
+        return ResponseEntity.ok(bookingService.getBookingByCustomer(authentication));
     }
 
     // Lấy booking theo hotelier (quản lý khách sạn)
     @GetMapping("/hotelier")
     public ResponseEntity<?> getBookingByRoom(Authentication authentication) {
-        return bookingService.getBookingByRoom(authentication);
+        return ResponseEntity.ok(bookingService.getBookingByRoom(authentication));
     }
 
     // Cập nhật trạng thái booking (checkin/checkout)

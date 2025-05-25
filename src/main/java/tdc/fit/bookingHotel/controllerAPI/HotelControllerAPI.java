@@ -44,7 +44,7 @@ public class HotelControllerAPI {
     public ResponseEntity<?> getHotelHotelier(@PathVariable Long id ) {
         return ResponseEntity.ok(hotelService.getHotelByHotelier(id)) ;
     }
-    @GetMapping("/hotelier/")
+    @GetMapping("/hotelier")
     public ResponseEntity<?> getHotelHotelier(Authentication authentication) {
         return ResponseEntity.ok(hotelService.getHotelByHotelier(authentication)) ;
     }
