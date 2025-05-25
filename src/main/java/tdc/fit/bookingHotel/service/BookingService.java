@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import tdc.fit.bookingHotel.entity.*;
 import tdc.fit.bookingHotel.entity.DTO.BookingDTO;
 import tdc.fit.bookingHotel.repository.*;
+
 
 @Service
 public class BookingService {
@@ -34,6 +36,7 @@ public class BookingService {
     @Autowired
     private HotelRepository hotelRepository;
 
+    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public ResponseEntity<?> getAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
         return ResponseEntity.ok(bookings);
@@ -211,7 +214,12 @@ public class BookingService {
                                 .body("Không thể check-out ở trạng thái hiện tại: " + currentStatus);
                     }
                     break;
-
+                case "cancel":
+                    if (!"ĐÃ TRẢ PHÒNG".equals(currentStatus) && !"ĐÃ HỦY".equals(currentStatus)) {
+                        booking.setStatus("ĐÃ HỦY");
+                        booking.getRoom().setStatus("AVAILABLE");
+                        }
+                    break;
                 default:
                     return ResponseEntity.badRequest()
                             .body("Hành động không hợp lệ. Chỉ nhận 'checkin' hoặc 'checkout'");

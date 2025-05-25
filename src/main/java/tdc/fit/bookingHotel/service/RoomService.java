@@ -73,13 +73,13 @@ public class RoomService {
 
 
     public ResponseEntity<?> createRoom(
-            @RequestParam String roomNumber,
-            @RequestParam Integer roomTypeId,
-            @RequestParam BigDecimal price,
-            @RequestParam int capacity,
-            @RequestParam String description,
-            @RequestParam Long hotelId,
-            @RequestParam MultipartFile image,
+          String roomNumber,
+            Integer roomTypeId,
+           BigDecimal price,
+           int capacity,
+            String description,
+           Long hotelId,
+          MultipartFile image,
             Authentication authentication
     ) {
         // 1. Xác thực và lấy Hotelier từ người dùng hiện tại
