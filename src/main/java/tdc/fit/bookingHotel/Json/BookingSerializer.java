@@ -48,7 +48,8 @@ public class BookingSerializer extends JsonSerializer<Booking> {
         // Dates
         gen.writeStringField("checkInDate", booking.getCheckInDate() != null ? booking.getCheckInDate().format(DATE_FORMATTER) : null);
         gen.writeStringField("checkOutDate", booking.getCheckOutDate() != null ? booking.getCheckOutDate().format(DATE_FORMATTER) : null);
-
+        gen.writeStringField("ngayTraPhong", booking.getNgayTraPhong() != null ? booking.getNgayTraPhong().format(DATE_FORMATTER) : null);
+        gen.writeNumberField("price", booking.getPrice());
         gen.writeStringField("status", booking.getStatus());
 
         gen.writeEndObject();

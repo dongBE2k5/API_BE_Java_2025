@@ -6,6 +6,7 @@ import lombok.Setter;
 import tdc.fit.bookingHotel.Json.BookingSerializer;
 import tdc.fit.bookingHotel.Json.CustomerSerializer;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -41,6 +42,12 @@ public class Booking {
 
 	@Column(name = "status")
 	private String status;
+
+	@Column(name = "price")
+	private BigDecimal price;
+
+	@Column(name = "ngayTraPhong")
+	private LocalDate ngayTraPhong;
 
 	public Integer getBookingId() {
 		return bookingId;
@@ -88,6 +95,22 @@ public class Booking {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public LocalDate getNgayTraPhong() {
+		return ngayTraPhong;
+	}
+
+	public void setNgayTraPhong(LocalDate ngayTraPhong) {
+		this.ngayTraPhong = ngayTraPhong;
 	}
 
 	@Override

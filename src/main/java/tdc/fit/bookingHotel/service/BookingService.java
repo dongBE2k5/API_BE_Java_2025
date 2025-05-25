@@ -1,5 +1,8 @@
 package tdc.fit.bookingHotel.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +80,7 @@ public class BookingService {
 
     public ResponseEntity<?> createBookingNew(BookingDTO bookingDTO) {
         try {
-            System.out.println(bookingDTO.toString());
+
 
             Room room = roomRepository.findById(bookingDTO.getRoomId())
                     .orElseThrow(() -> new EntityNotFoundException("Room not found"));
@@ -96,8 +99,12 @@ public class BookingService {
             if (!isRoomAvailable) {
                 return ResponseEntity.badRequest().body("Room is not available for the selected dates.");
             }
+            long numberOfDays = ChronoUnit.DAYS.between(bookingDTO.getCheckinDate(), bookingDTO.getCheckoutDate());
+            System.out.println("So ngay dat phong " + numberOfDays);
+            BigDecimal totalPrice = room.getPrice().multiply(BigDecimal.valueOf(numberOfDays));
 
             Booking booking = new Booking();
+            booking.setPrice(totalPrice);
             room.setStatus("RESERVED");
             booking.setStatus("CHƯA NHẬN PHÒNG");
             booking.setRoom(room);
@@ -205,6 +212,8 @@ public class BookingService {
                 case "checkout":
                     if ("ĐÃ NHẬN PHÒNG".equals(currentStatus)) {
                         booking.setStatus("ĐÃ TRẢ PHÒNG");
+                        LocalDate currentDay = LocalDate.now();
+                        booking.setNgayTraPhong(currentDay);
                         booking.getRoom().setStatus("AVAILABLE");
                     } else {
                         return ResponseEntity.badRequest()
