@@ -71,17 +71,19 @@ public class RoomControllerAPI {
     }
     
     @PutMapping(value="/{id}",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> updateRoom(  @RequestParam Long id,
+    public ResponseEntity<?> updateRoom(  
+    	    @PathVariable("id") Long id,
             @RequestParam String roomNumber,
             @RequestParam Integer roomTypeId,
             @RequestParam BigDecimal price,
             @RequestParam int capacity,
             @RequestParam String description,
             @RequestParam Long hotelId,
+            @RequestParam String status,
             @RequestParam(required = false) MultipartFile image,
             Authentication authentication
             ) {
-    	return ResponseEntity.ok(roomService.updateRoom(id,roomNumber,roomTypeId,price,capacity,description,hotelId,image,authentication));
+    	return ResponseEntity.ok(roomService.updateRoom(id,roomNumber,roomTypeId,price,capacity,description,hotelId,status,image,authentication));
     }
 
     
