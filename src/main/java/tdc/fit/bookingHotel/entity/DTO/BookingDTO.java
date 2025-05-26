@@ -1,10 +1,12 @@
 package tdc.fit.bookingHotel.entity.DTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class BookingDTO {
     private Long customerId;
     private Long roomId;
+    private BigDecimal price;
     private LocalDate checkinDate;
     private LocalDate checkoutDate;
 
@@ -18,6 +20,14 @@ public class BookingDTO {
 
     public Long getRoomId() {
         return roomId;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public void setRoomId(Long roomId) {

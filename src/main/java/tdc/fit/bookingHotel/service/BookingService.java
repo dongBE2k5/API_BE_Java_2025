@@ -39,7 +39,7 @@ public class BookingService {
     @Autowired
     private HotelRepository hotelRepository;
 
-    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_SUPERADMIN')")
     public ResponseEntity<?> getAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
         return ResponseEntity.ok(bookings);
@@ -102,12 +102,12 @@ public class BookingService {
             if (!isRoomAvailable) {
                 return ResponseEntity.badRequest().body("Room is not available for the selected dates.");
             }
-            long numberOfDays = ChronoUnit.DAYS.between(bookingDTO.getCheckinDate(), bookingDTO.getCheckoutDate());
-            System.out.println("So ngay dat phong " + numberOfDays);
-            BigDecimal totalPrice = room.getPrice().multiply(BigDecimal.valueOf(numberOfDays));
+//            long numberOfDays = ChronoUnit.DAYS.between(bookingDTO.getCheckinDate(), bookingDTO.getCheckoutDate());
+//            System.out.println("So ngay dat phong " + numberOfDays);
+//            BigDecimal totalPrice = room.getPrice().multiply(BigDecimal.valueOf(numberOfDays));
 
             Booking booking = new Booking();
-            booking.setPrice(totalPrice);
+            booking.setPrice(bookingDTO.getPrice());
             room.setStatus("RESERVED");
             booking.setStatus("CHƯA NHẬN PHÒNG");
             booking.setRoom(room);
