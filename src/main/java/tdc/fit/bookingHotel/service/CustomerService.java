@@ -44,7 +44,7 @@ public class CustomerService {
                  .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     	 
     	  Customer customer = customerRepository.findByUserId(user);
-    	    
+    	    System.out.println("customer"+customer.toString());
     	    if (customer == null || customer.getCustomerId() == null) {
     	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
     	                .body("Customer not found for user id: " + id);
@@ -117,7 +117,10 @@ public class CustomerService {
         	            return ResponseEntity.status(HttpStatus.NOT_FOUND)
         	                                 .body("Customer not found for user id: " + id);
         	        }
-
+        		 
+        		 existingCustomer.setAddress(customerDTO.getAddress());
+        		 existingCustomer.setDob(customerDTO.getDob());
+        		 existingCustomer.setGender(customerDTO.getGender());
         existingCustomer.setFullname(customerDTO.getFullName());
         existingCustomer.setEmail(customerDTO.getEmail());
         existingCustomer.setPhone(customerDTO.getPhone());
