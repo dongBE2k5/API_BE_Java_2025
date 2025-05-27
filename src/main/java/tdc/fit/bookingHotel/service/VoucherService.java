@@ -25,9 +25,9 @@ public class VoucherService {
         return ResponseEntity.ok(voucher);
     }
 
-    // Tạo mới RoomType
-    public ResponseEntity<?> create(Voucher voucher) {
 
+    public ResponseEntity<?> create(Voucher voucher) {
+        System.out.println("Voucher Code: " + voucher.getCode());
         Voucher voucherSave = voucherRepository.save(voucher);
         return ResponseEntity.ok(voucherSave);
     }

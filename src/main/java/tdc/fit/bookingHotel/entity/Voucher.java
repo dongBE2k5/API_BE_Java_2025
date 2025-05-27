@@ -4,28 +4,33 @@ package tdc.fit.bookingHotel.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "vouchers")
+@Getter
+@Setter
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    
     @Column(name = "code", unique = true)
     private String code;
+    
     @Column(name = "description")
     private String description;
+    
     @Column(name = "percent")
     private int percent;
     @Column(name = "quantity")
     private int quantity;
 
-    public Voucher() {
-    }
 
     public Long getId() {
         return id;
